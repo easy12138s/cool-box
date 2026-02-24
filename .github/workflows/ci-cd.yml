@@ -65,9 +65,9 @@ jobs:
       - name: Deploy to Aliyun Server
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.ALIYUN_SERVER_HOST }}
-          username: ${{ secrets.ALIYUN_SERVER_USER }}
-          key: ${{ secrets.ALIYUN_SERVER_KEY }}
+          host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
+          username: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
+          key: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
           port: ${{ secrets.ALIYUN_SERVER_PORT }}
           script: |
             docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password=${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
