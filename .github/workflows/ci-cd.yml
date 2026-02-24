@@ -77,8 +77,17 @@ jobs:
           echo "$SSH_KEY" | base64 -d > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
           
+          echo "Checking decoded key..."
+          echo "Key file size: $(wc -c < /tmp/deploy_key) bytes"
+          echo "Key fingerprint:"
+          ssh-keygen -lf /tmp/deploy_key || echo "Invalid key format!"
+          echo "First line of key:"
+          head -1 /tmp/deploy_key
+          echo "Last line of key:"
+          tail -1 /tmp/deploy_key
+          
           echo "Testing SSH connection..."
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
+          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
           
           echo "Deploying..."
           ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
