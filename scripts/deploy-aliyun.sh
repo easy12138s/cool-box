@@ -38,6 +38,11 @@ pnpm install
 echo "步骤2: 构建项目..."
 pnpm build
 
+# 检查构建产物
+echo "检查构建产物..."
+ls -la dist/ || echo "dist目录不存在"
+ls -la nginx.conf || echo "nginx.conf不存在"
+
 # 2. 登录阿里云镜像仓库
 echo "步骤3: 登录阿里云镜像仓库..."
 docker login --username=黄河边上的dj之王 ${REGISTRY}
