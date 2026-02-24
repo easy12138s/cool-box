@@ -62,29 +62,34 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Decode SSH Key
-        run: |
-          echo "Decoding SSH key from base64..."
-          echo "${{ secrets.ALIYUN_SERVER_SSH_KEY }}" | base64 -d > /tmp/deploy_key
-          chmod 600 /tmp/deploy_key
-          echo "Key decoded successfully"
-          echo "Key fingerprint:"
-          ssh-keygen -lf /tmp/deploy_key
-
       - name: Deploy to Aliyun Server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
-          username: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
-          key_path: /tmp/deploy_key
-          port: ${{ secrets.ALIYUN_SERVER_PORT }}
-          script: |
-            docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password=${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
-            docker pull ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
+        env:
+          SSH_HOST: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
+          SSH_PORT: ${{ secrets.ALIYUN_SERVER_PORT }}
+          SSH_USER: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
+          SSH_KEY: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
+          ACR_REGISTRY: ${{ secrets.ALIYUN_ACR_REGISTRY }}
+          ACR_REPO: ${{ secrets.ALIYUN_ACR_REPO }}
+          ACR_USERNAME: ${{ secrets.ALIYUN_ACR_USERNAME }}
+          ACR_PASSWORD: ${{ secrets.ALIYUN_ACR_PASSWORD }}
+        run: |
+          echo "Decoding SSH key..."
+          echo "$SSH_KEY" | base64 -d > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          
+          echo "Testing SSH connection..."
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
+          
+          echo "Deploying..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+            docker login --username=$ACR_USERNAME --password=$ACR_PASSWORD $ACR_REGISTRY
+            docker pull $ACR_REGISTRY/$ACR_REPO:latest
             docker stop cool-box || true
             docker rm cool-box || true
             docker run -d \
               --name cool-box \
               -p 3000:80 \
               --restart unless-stopped \
-              ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
+              $ACR_REGISTRY/$ACR_REPO:latest
+            docker ps
+          EOF
