@@ -9,11 +9,14 @@ set -e
 REGISTRY="crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com"
 NAMESPACE="easy-box"
 IMAGE_NAME="box1"
-TAG="${1:-latest}"
+
+# 版本号（不包含 v 前缀）
+VERSION="${1:-1}"
 
 CONTAINER_NAME="cool-box"
 PORT="${2:-3000}"
 
+TAG="v${VERSION}"
 FULL_IMAGE="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${TAG}"
 
 echo "=== 阿里云镜像启动脚本 ==="
@@ -21,7 +24,7 @@ echo "镜像地址: ${FULL_IMAGE}"
 echo "端口: ${PORT}"
 echo ""
 
-# 登录阿里云镜像仓库（首次需要）
+# 检查登录状态
 echo "检查登录状态..."
 if ! docker info > /dev/null 2>&1; then
     echo "请先登录阿里云镜像仓库："
