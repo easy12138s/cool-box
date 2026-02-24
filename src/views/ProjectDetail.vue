@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProjectsStore } from '@/stores/projects'
 import { useSiteStore } from '@/stores/site'
 import ProjectLinks from '@/components/project/ProjectLinks.vue'
+import { marked } from 'marked'
 
 const route = useRoute()
 const projectsStore = useProjectsStore()
@@ -11,12 +12,26 @@ const siteStore = useSiteStore()
 
 const slug = computed(() => route.params.slug as string)
 const project = computed(() => projectsStore.getProjectBySlug(slug.value))
+const content = ref('')
+const contentLoading = ref(true)
 
-onMounted(() => {
-  if (projectsStore.projects.length === 0) {
-    projectsStore.fetchProjects()
+const loadContent = async () => {
+  contentLoading.value = true
+  if (project.value) {
+    const md = await projectsStore.getProjectContent(slug.value, siteStore.locale)
+    content.value = marked.parse(md) as string
   }
+  contentLoading.value = false
+}
+
+onMounted(async () => {
+  if (!projectsStore.loaded) {
+    await projectsStore.loadProjects()
+  }
+  await loadContent()
 })
+
+watch(() => siteStore.locale, loadContent)
 </script>
 
 <template>
@@ -69,11 +84,12 @@ onMounted(() => {
       </div>
       
       <!-- Content -->
-      <div class="prose dark:prose-invert max-w-none">
-        <!-- TODO: 动态加载 Markdown 或 Vue 组件 -->
-        <div class="text-center py-12 text-gray-500">
-          <p>{{ siteStore.locale === 'zh' ? '项目详情内容加载中...' : 'Loading project details...' }}</p>
-        </div>
+      <div v-if="contentLoading" class="text-center py-12 text-gray-500">
+        <p>{{ siteStore.locale === 'zh' ? '加载中...' : 'Loading...' }}</p>
+      </div>
+      <div v-else-if="content" class="prose dark:prose-invert max-w-none" v-html="content" />
+      <div v-else class="text-center py-12 text-gray-500">
+        <p>{{ siteStore.locale === 'zh' ? '暂无内容' : 'No content available' }}</p>
       </div>
     </div>
     

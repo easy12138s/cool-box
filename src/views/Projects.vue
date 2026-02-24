@@ -11,8 +11,10 @@ const siteStore = useSiteStore()
 const selectedTag = ref<string | null>(null)
 const searchQuery = ref('')
 
-onMounted(() => {
-  projectsStore.fetchProjects()
+onMounted(async () => {
+  if (!projectsStore.loaded) {
+    await projectsStore.loadProjects()
+  }
 })
 
 const allTags = computed(() => {

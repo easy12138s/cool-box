@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue'
 import { useSiteStore } from '@/stores/site'
 import { useProjectsStore } from '@/stores/projects'
-import { onMounted } from 'vue'
 import ProjectCard from '@/components/project/ProjectCard.vue'
 
 const siteStore = useSiteStore()
 const projectsStore = useProjectsStore()
 
-onMounted(() => {
-  projectsStore.fetchProjects()
+onMounted(async () => {
+  if (!projectsStore.loaded) {
+    await projectsStore.loadProjects()
+  }
 })
 
-const featuredProjects = projectsStore.projects.slice(0, 4)
+const featuredProjects = computed(() => projectsStore.projects.slice(0, 4))
 </script>
 
 <template>
