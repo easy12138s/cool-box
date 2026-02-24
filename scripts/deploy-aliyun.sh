@@ -5,6 +5,12 @@
 
 set -e
 
+# 获取脚本所在目录（项目根目录）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
 # 阿里云镜像仓库配置
 REGISTRY="crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com"
 NAMESPACE="easy-box"
@@ -19,6 +25,7 @@ TAG="v${VERSION}"
 FULL_IMAGE="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${TAG}"
 
 echo "=== 阿里云镜像部署脚本 ==="
+echo "项目目录: ${PROJECT_ROOT}"
 echo "镜像地址: ${FULL_IMAGE}"
 echo "版本: ${VERSION}"
 echo ""
