@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSiteStore } from '@/stores/site'
 
-const props = defineProps<{
+defineProps<{
   tags: string[]
   selected: string | null
 }>()

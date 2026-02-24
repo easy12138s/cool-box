@@ -68,7 +68,8 @@ export function useProjects() {
 
   const getProjectHasVuePage = async (slug: string) => {
     const modules = import.meta.glob('/content/projects/*/page.vue')
-    return !!modules[`/content/projects/${slug}/page.vue`]
+    const vuePath = `/content/projects/${slug}/page.vue`
+    return !!modules[vuePath]
   }
 
   return {
@@ -84,8 +85,6 @@ export function useProjects() {
 function parseYaml(content: string): Record<string, any> {
   const result: Record<string, any> = {}
   const lines = content.split('\n')
-  let currentKey = ''
-  let currentParent: Record<string, any> = result
 
   for (const rawLine of lines) {
     const line = rawLine.replace(/\t/g, '  ')
@@ -94,40 +93,36 @@ function parseYaml(content: string): Record<string, any> {
     if (indent < 0 || line.trim().startsWith('#')) continue
 
     const isArrayItem = line.trim().startsWith('-')
-    const content = isArrayItem ? line.trim().slice(1).trim() : line
-    const colonIndex = content.indexOf(':')
+    const lineContent = isArrayItem ? line.trim().slice(1).trim() : line
+    const colonIndex = lineContent.indexOf(':')
 
     if (colonIndex === -1) continue
 
-    let key = content.slice(0, colonIndex).trim()
-    let value = content.slice(colonIndex + 1).trim()
+    const key = lineContent.slice(0, colonIndex).trim()
+    const value = lineContent.slice(colonIndex + 1).trim()
 
     const level = Math.floor(indent / 2)
 
     if (level === 0) {
       if (value === '' || value === '|') {
-        currentKey = key
-        if (!result[key]) {
-          result[key] = key === 'links' ? {} : { zh: '', en: '' }
-        }
-        currentParent = result[key]
+        result[key] = key === 'links' ? {} : { zh: '', en: '' }
+      } else if (value.startsWith('[')) {
+        result[key] = parseArray(value)
       } else {
         result[key] = parseValue(value)
       }
-    } else if (level === 1 && currentParent && typeof currentParent === 'object') {
+    } else if (level === 1) {
+      if (!result[key]) {
+        result[key] = key === 'links' ? {} : { zh: '', en: '' }
+      }
       if (value === '' || value === '|') {
-        currentParent[key] = key === 'links' || key === 'social' ? {} : { zh: '', en: '' }
-        if (Array.isArray(currentParent)) {
-          currentParent.push({ [key]: currentParent[key === 'links' || key === 'social' ? {} : { zh: '', en: '' }] })
-        }
+        // nested object
       } else if (value.startsWith('[')) {
-        currentParent[key] = parseArray(value)
+        result[key] = parseArray(value)
       } else if (key === 'zh' || key === 'en') {
-        if (typeof currentParent === 'object' && !Array.isArray(currentParent)) {
-          currentParent[key] = parseValue(value)
-        }
+        result[key] = parseValue(value)
       } else {
-        currentParent[key] = parseValue(value)
+        result[key] = parseValue(value)
       }
     }
   }

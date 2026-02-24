@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useSiteStore } from '@/stores/site'
-import type { ProjectMeta } from '@/stores/projects'
+import type { ProjectMeta } from '@/types'
 
 const props = defineProps<{
   project: ProjectMeta
