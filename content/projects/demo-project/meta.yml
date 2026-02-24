@@ -1,0 +1,18 @@
+slug: demo-project
+title:
+  zh: 示例项目
+  en: Demo Project
+description:
+  zh: 这是一个展示项目功能的示例
+  en: A demo project to showcase features
+
+tags: [Vue, TypeScript, Demo]
+status: active
+createdAt: 2024-01-15
+updatedAt: 2024-06-20
+hidden: false
+order: 1
+
+links:
+  github: https://github.com
+  demo: https://example.com

@@ -1,0 +1,19 @@
+author:
+  name: Your Name
+  avatar: /images/avatar.png
+  bio:
+    zh: 你好！我是一名开发者，热爱开源和新技术。
+    en: Hello! I'm a developer who loves open source and new technologies.
+  location: China
+
+social:
+  github: https://github.com/username
+  blog: https://blog.example.com
+  twitter: https://twitter.com/username
+  email: mailto:your@email.com
+
+site:
+  title: Cool Box
+  description:
+    zh: 我的项目展示空间
+    en: My Project Showcase
