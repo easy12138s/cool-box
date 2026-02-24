@@ -93,7 +93,14 @@ cool-box/
 ├── index.html
 ├── vite.config.ts
 ├── uno.config.ts
-└── package.json
+├── package.json
+├── Dockerfile               # Docker 构建文件
+├── nginx.conf              # Nginx 配置
+├── docker-compose.yml      # Docker Compose
+├── .github/
+│   └── workflows/
+│       └── deploy.yml      # GitHub Actions
+└── .dockerignore
 ```
 
 ---
@@ -329,9 +336,131 @@ site:
 
 ## 部署
 
-推荐部署到：
-- **Vercel** - 自动部署
-- **Netlify** - 功能丰富
-- **GitHub Pages** - 免费开源
+### 构建
 
-构建命令：`pnpm build`，输出在 `dist/` 目录
+```bash
+pnpm build
+```
+
+输出目录：`dist/`
+
+---
+
+### 1. GitHub Pages 部署
+
+**方式一：GitHub Actions（推荐）**
+
+项目已配置自动部署工作流 (`.github/workflows/deploy.yml`)
+
+1. 推送代码到 master 分支
+2. 前往仓库 Settings → Pages
+3. Source 选择 "GitHub Actions"
+4. 自动触发部署
+
+**手动部署：**
+
+```bash
+# 构建
+pnpm build
+
+# 使用 gh-pages 包
+pnpm add -D gh-pages
+pnpm build && gh-pages -d dist
+```
+
+---
+
+### 2. Docker 部署
+
+**构建并运行：**
+
+```bash
+# 构建镜像
+docker build -t cool-box .
+
+# 运行容器
+docker run -d -p 3000:80 cool-box
+```
+
+**使用 Docker Compose：**
+
+```bash
+# 构建并启动
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 停止
+docker-compose down
+```
+
+访问 `http://localhost:3000`
+
+---
+
+### 3. 本地服务器部署
+
+**构建后部署：**
+
+```bash
+pnpm build
+
+# 使用任意静态服务器
+npx serve dist
+
+# 或使用 Python
+python3 -m http.server 8000 -d dist
+```
+
+**使用 Nginx：**
+
+```bash
+# 安装 Nginx（Ubuntu）
+sudo apt install nginx
+
+# 复制构建文件
+sudo cp -r dist/* /var/www/html/
+
+# 配置（使用项目中的 nginx.conf）
+sudo cp nginx.conf /etc/nginx/sites-available/default
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+访问 `http://localhost`
+
+---
+
+### 4. Vercel 部署
+
+```bash
+# 安装 Vercel CLI
+pnpm add -g vercel
+
+# 部署
+vercel
+```
+
+或连接 GitHub 仓库自动部署。
+
+---
+
+### 5. Netlify 部署
+
+1. 登录 Netlify
+2. 导入 GitHub 仓库
+3. Build command: `pnpm build`
+4. Publish directory: `dist`
+5. Deploy
+
+---
+
+### 部署配置说明
+
+| 文件 | 用途 |
+|------|------|
+| `.github/workflows/deploy.yml` | GitHub Actions 自动部署 |
+| `Dockerfile` | Docker 镜像构建 |
+| `nginx.conf` | Nginx 生产配置 |
+| `docker-compose.yml` | Docker 本地开发/部署 |
