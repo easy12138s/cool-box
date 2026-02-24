@@ -68,8 +68,7 @@ jobs:
           echo "Host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}"
           echo "Port: ${{ secrets.ALIYUN_SERVER_PORT }}"
           echo "User: ${{ secrets.ALIYUN_SERVER_SSH_USER }}"
-          echo "Key starts with: ${{ secrets.ALIYUN_SERVER_SSH_KEY | take(30) }}"
-          echo "Key ends with: ${{ secrets.ALIYUN_SERVER_SSH_KEY | takelast(30) }}"
+          echo "Key has value: ${{ secrets.ALIYUN_SERVER_SSH_KEY != '' }}"
           echo "=== End SSH Config ==="
 
       - name: Deploy to Aliyun Server
