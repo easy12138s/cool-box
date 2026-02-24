@@ -189,6 +189,12 @@ pnpm build
 
 ---
 
+### GitHub Pages
+
+推荐使用 `gh-pages` 分支发布：工作流 `.github/workflows/gh-pages.yml` 会将 `dist/` 推送到 `gh-pages` 分支。在仓库 Settings → Pages 中选择 “Deploy from a branch”，并选择 `gh-pages` / `(root)`。
+
+---
+
 ### Docker 部署
 
 **构建并运行：**

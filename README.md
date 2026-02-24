@@ -72,7 +72,7 @@ docker compose up -d --build
 
 本项目为静态站点，可部署到 GitHub Pages（已适配 Hash 路由与相对 base）。若你的 GitHub Pages 已用于个人域名根站点（例如 Hexo），建议使用 Project Pages（`https://<user>.github.io/<repo>/`）避免冲突。
 
-推荐使用 `gh-pages` 分支发布：仓库内置工作流 `.github/workflows/gh-pages.yml`，会将 `dist/` 推送到 `gh-pages` 分支。GitHub 设置里将 Pages Source 选择 “Deploy from a branch”，并选择 `gh-pages` / `(root)`。
+推荐使用 `gh-pages` 分支发布：仓库内置工作流 `.github/workflows/gh-pages.yml`，会将 `dist/` 推送到 `gh-pages` 分支。GitHub 设置里将 Pages Source 选择 “Deploy from a branch”，并选择 `gh-pages` / `(root)`，等待 Actions 跑完后即可访问 `https://<user>.github.io/<repo>/`。
 
 ## 配置
 
