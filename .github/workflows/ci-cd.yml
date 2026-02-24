@@ -62,12 +62,25 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Check SSH Key Format
+        run: |
+          echo "Checking SSH key format..."
+          echo "Key length: ${#SSH_KEY}"
+          echo "Key first line:"
+          echo "$SSH_KEY" | head -1
+          echo "Key last line:"
+          echo "$SSH_KEY" | tail -1
+          echo "Line count:"
+          echo "$SSH_KEY" | wc -l
+        env:
+          SSH_KEY: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
+
       - name: Deploy to Aliyun Server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
           username: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
-          password: ${{ secrets.ALIYUN_SERVER_SSH_PASSWORD }}
+          key: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
           port: ${{ secrets.ALIYUN_SERVER_PORT }}
           script: |
             docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password=${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
