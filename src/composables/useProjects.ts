@@ -55,12 +55,14 @@ export function useProjects() {
 
     const modules = import.meta.glob('/content/projects/*/index*.md', {
       query: '?raw',
-      import: 'default'
-    })
+      import: 'default',
+      eager: false
+    }) as Record<string, () => Promise<unknown>>
 
     for (const p of paths) {
       if (modules[p]) {
-        return modules[p] as string
+        const content = await modules[p]()
+        return content as string
       }
     }
     return ''
