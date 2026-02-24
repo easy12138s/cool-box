@@ -1,5 +1,7 @@
 name: CI/CD Deploy to Aliyun
 
+# 自动部署流程：推送代码 → 构建镜像 → 推送到阿里云 ACR → 服务器拉取运行
+
 on:
   push:
     branches: [master, main]
