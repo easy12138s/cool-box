@@ -62,6 +62,16 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Debug SSH Config
+        run: |
+          echo "=== SSH Configuration ==="
+          echo "Host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}"
+          echo "Port: ${{ secrets.ALIYUN_SERVER_PORT }}"
+          echo "User: ${{ secrets.ALIYUN_SERVER_SSH_USER }}"
+          echo "Key starts with: ${{ secrets.ALIYUN_SERVER_SSH_KEY | take(30) }}"
+          echo "Key ends with: ${{ secrets.ALIYUN_SERVER_SSH_KEY | takelast(30) }}"
+          echo "=== End SSH Config ==="
+
       - name: Deploy to Aliyun Server
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -69,13 +79,24 @@ jobs:
           username: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
           key: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
           port: ${{ secrets.ALIYUN_SERVER_PORT }}
+          debug: true
           script: |
+            echo "=== Connected to server ==="
+            echo "Current user: $(whoami)"
+            echo "Hostname: $(hostname)"
+            echo "Docker version: $(docker --version)"
+            echo "=== Logging in to ACR ==="
             docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password=${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
+            echo "=== Pulling image ==="
             docker pull ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
+            echo "=== Stopping old container ==="
             docker stop cool-box || true
             docker rm cool-box || true
+            echo "=== Starting new container ==="
             docker run -d \
               --name cool-box \
               -p 3000:80 \
               --restart unless-stopped \
               ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
+            echo "=== Deployment complete ==="
+            docker ps
