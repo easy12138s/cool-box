@@ -62,52 +62,20 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Debug SSH Config
-        run: |
-          echo "=== SSH Configuration ==="
-          echo "Host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}"
-          echo "Port: ${{ secrets.ALIYUN_SERVER_PORT }}"
-          echo "User: ${{ secrets.ALIYUN_SERVER_SSH_USER }}"
-          echo "Key has value: ${{ secrets.ALIYUN_SERVER_SSH_KEY != '' }}"
-          echo "=== End SSH Config ==="
-
-      - name: Test SSH Connection
-        env:
-          SSH_HOST: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
-          SSH_PORT: ${{ secrets.ALIYUN_SERVER_PORT }}
-          SSH_USER: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
-          SSH_KEY: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
-        run: |
-          echo "$SSH_KEY" > /tmp/deploy_key
-          chmod 600 /tmp/deploy_key
-          echo "Testing SSH connection to $SSH_USER@$SSH_HOST:$SSH_PORT"
-          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connection successful' && whoami && hostname"
-
       - name: Deploy to Aliyun Server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.ALIYUN_SERVER_SSH_HOST }}
           username: ${{ secrets.ALIYUN_SERVER_SSH_USER }}
-          key: ${{ secrets.ALIYUN_SERVER_SSH_KEY }}
+          password: ${{ secrets.ALIYUN_SERVER_SSH_PASSWORD }}
           port: ${{ secrets.ALIYUN_SERVER_PORT }}
-          debug: true
           script: |
-            echo "=== Connected to server ==="
-            echo "Current user: $(whoami)"
-            echo "Hostname: $(hostname)"
-            echo "Docker version: $(docker --version)"
-            echo "=== Logging in to ACR ==="
             docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password=${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
-            echo "=== Pulling image ==="
             docker pull ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
-            echo "=== Stopping old container ==="
             docker stop cool-box || true
             docker rm cool-box || true
-            echo "=== Starting new container ==="
             docker run -d \
               --name cool-box \
               -p 3000:80 \
               --restart unless-stopped \
               ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
-            echo "=== Deployment complete ==="
-            docker ps
