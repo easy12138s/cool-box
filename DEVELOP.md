@@ -1,29 +1,8 @@
 # Cool Box 开发文档
 
-> 最后更新: 2024-06-21
-
-## 项目状态
-
-| 模块 | 状态 | 说明 |
-|------|------|------|
-| 基础框架 | ✅ 完成 | Vite + Vue 3 + TypeScript |
-| 动态内容加载 | ✅ 完成 | 自动扫描 content/projects 目录 |
-| Markdown 渲染 | ✅ 完成 | 使用 marked 库 |
-| 搜索功能 | ✅ 完成 | minisearch 全文搜索 |
-| 暗黑模式 | ✅ 完成 | light/dark/auto 三种模式 |
-| 页面动画 | ✅ 完成 | 过渡动画 + 揭示组件 |
-| 项目展示组件 | ✅ 完成 | Card, Filter, Links 等 |
-| 国际化 | ✅ 完成 | 中英文支持 |
-
----
-
 ## 项目概述
 
-基于 Vite + Vue 3 的静态项目展示网站，支持：
-- 灵活的项目展示（Markdown / Vue 组件）
-- 暗黑模式、国际化
-- 响应式布局、动画效果
-- 便捷的内容管理和扩展
+基于 Vite + Vue 3 的静态项目展示网站，内容来自 `content/projects`，通过 Markdown 渲染生成项目详情页。
 
 ---
 
@@ -99,7 +78,7 @@ cool-box/
 ├── docker-compose.yml      # Docker Compose
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml      # GitHub Actions
+│       └── ci-cd.yml       # GitHub Actions
 └── .dockerignore
 ```
 
@@ -108,34 +87,14 @@ cool-box/
 ## 快速开始
 
 ```bash
-# 安装依赖
 pnpm install
 
-# 开发模式
 pnpm dev
 
-# 构建生产版本
 pnpm build
 
-# 预览构建结果
 pnpm preview
 ```
-
----
-
-## 开发规范
-
-### 组件规范
-
-- 使用 `<script setup lang="ts">` 语法
-- 组件名使用 PascalCase
-- Props 使用 TypeScript 类型定义
-
-### 样式规范
-
-- 使用 UnoCSS 原子化类
-- 暗色模式支持：通过 `dark:` 前缀
-- 颜色变量：在 `uno.config.ts` 中定义
 
 ---
 
@@ -152,7 +111,7 @@ pnpm preview
 
 ## 核心功能
 
-### 1. 项目管理
+### 项目管理
 
 **添加新项目：**
 
@@ -189,110 +148,6 @@ hidden: false
 order: 1
 ```
 
-### 2. 国际化
-
-使用 `useSiteStore` 的 `locale` 状态：
-
-```typescript
-const siteStore = useSiteStore()
-siteStore.locale // 'zh' | 'en'
-
-// 切换语言
-siteStore.setLocale('en')
-```
-
-### 3. 暗黑模式
-
-```typescript
-// 切换主题
-siteStore.toggleTheme() // light -> dark -> auto
-
-// 或直接设置
-siteStore.setTheme('dark')
-```
-
-### 4. 搜索功能
-
-```typescript
-const { initSearch, search } = useSearch()
-
-// 初始化搜索索引
-await initSearch()
-
-// 搜索项目
-const results = search('vue')
-```
-
----
-
-## 动画组件
-
-### ScrollReveal
-
-滚动揭示组件，元素进入视口时触发动画。
-
-```vue
-<ScrollReveal :threshold="0.1" :delay="100" direction="up">
-  <div>内容</div>
-</ScrollReveal>
-```
-
-**Props:**
-- `threshold`: 触发阈值 (默认 0.1)
-- `delay`: 延迟毫秒 (默认 0)
-- `direction`: 动画方向 up/down/left/right
-
-### FadeIn
-
-淡入动画组件。
-
-```vue
-<FadeIn :duration="500" :delay="100">
-  <div>内容</div>
-</FadeIn>
-```
-
-**Props:**
-- `duration`: 动画时长毫秒 (默认 500)
-- `delay`: 延迟毫秒 (默认 0)
-
-### 页面过渡
-
-App.vue 中已配置页面切换动画（淡入 + 轻微上移）
-
----
-
-## 状态管理
-
-### useProjectsStore
-
-```typescript
-const store = useProjectsStore()
-
-store.projects           // 项目列表
-store.loading           // 加载状态
-store.loaded            // 是否已加载
-
-store.loadProjects()    // 加载所有项目
-store.getProjectBySlug('xxx') // 获取项目
-store.getProjectContent('xxx', 'zh') // 获取内容
-```
-
-### useSiteStore
-
-```typescript
-const store = useSiteStore()
-
-store.config         // 站点配置
-store.locale        // 当前语言
-store.theme         // 当前主题
-store.isDark        // 是否暗色模式
-
-store.setLocale('en')
-store.setTheme('dark')
-store.toggleTheme()
-```
-
 ---
 
 ## 配置说明
@@ -322,18 +177,6 @@ site:
 
 ---
 
-## 扩展性
-
-| 需求 | 实现方式 |
-|------|----------|
-| 新增链接类型 | 在 meta.yml 添加字段 |
-| 新增页面 | views/ 添加组件，router/ 注册 |
-| 新增语言 | 内容文件加后缀 (index.zh.md) |
-| 新增组件 | components/ 添加组件 |
-| 自定义动画 | 项目详情页单独添加 |
-
----
-
 ## 部署
 
 ### 构建
@@ -346,121 +189,24 @@ pnpm build
 
 ---
 
-### 1. GitHub Pages 部署
-
-**方式一：GitHub Actions（推荐）**
-
-项目已配置自动部署工作流 (`.github/workflows/deploy.yml`)
-
-1. 推送代码到 master 分支
-2. 前往仓库 Settings → Pages
-3. Source 选择 "GitHub Actions"
-4. 自动触发部署
-
-**手动部署：**
-
-```bash
-# 构建
-pnpm build
-
-# 使用 gh-pages 包
-pnpm add -D gh-pages
-pnpm build && gh-pages -d dist
-```
-
----
-
-### 2. Docker 部署
+### Docker 部署
 
 **构建并运行：**
 
 ```bash
-# 构建镜像
 docker build -t cool-box .
 
-# 运行容器
 docker run -d -p 3000:80 cool-box
 ```
 
 **使用 Docker Compose：**
 
 ```bash
-# 构建并启动
 docker-compose up -d
 
-# 查看日志
 docker-compose logs -f
 
-# 停止
 docker-compose down
 ```
 
 访问 `http://localhost:3000`
-
----
-
-### 3. 本地服务器部署
-
-**构建后部署：**
-
-```bash
-pnpm build
-
-# 使用任意静态服务器
-npx serve dist
-
-# 或使用 Python
-python3 -m http.server 8000 -d dist
-```
-
-**使用 Nginx：**
-
-```bash
-# 安装 Nginx（Ubuntu）
-sudo apt install nginx
-
-# 复制构建文件
-sudo cp -r dist/* /var/www/html/
-
-# 配置（使用项目中的 nginx.conf）
-sudo cp nginx.conf /etc/nginx/sites-available/default
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-访问 `http://localhost`
-
----
-
-### 4. Vercel 部署
-
-```bash
-# 安装 Vercel CLI
-pnpm add -g vercel
-
-# 部署
-vercel
-```
-
-或连接 GitHub 仓库自动部署。
-
----
-
-### 5. Netlify 部署
-
-1. 登录 Netlify
-2. 导入 GitHub 仓库
-3. Build command: `pnpm build`
-4. Publish directory: `dist`
-5. Deploy
-
----
-
-### 部署配置说明
-
-| 文件 | 用途 |
-|------|------|
-| `.github/workflows/deploy.yml` | GitHub Actions 自动部署 |
-| `Dockerfile` | Docker 镜像构建 |
-| `nginx.conf` | Nginx 生产配置 |
-| `docker-compose.yml` | Docker 本地开发/部署 |
