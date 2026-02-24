@@ -70,7 +70,7 @@ docker compose up -d --build
 
 ### GitHub Pages
 
-本项目为静态站点，理论上可部署到 GitHub Pages；若使用子路径（`/<repo>/`）发布，需同步配置构建 `base` 与路由策略。
+本项目为静态站点，可部署到 GitHub Pages（已适配 Hash 路由与相对 base）。若你的 GitHub Pages 已用于个人域名根站点（例如 Hexo），建议使用 Project Pages（`https://<user>.github.io/<repo>/`）避免冲突。
 
 ## 配置
 
