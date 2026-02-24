@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useSiteStore } from '@/stores/site'
+import ThemeToggle from './ThemeToggle.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -29,7 +30,7 @@ const toggleLocale = () => {
       </router-link>
       
       <!-- Desktop Nav -->
-      <div class="hidden md:flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-4">
         <router-link 
           v-for="link in navLinks" 
           :key="link.path"
@@ -39,6 +40,8 @@ const toggleLocale = () => {
         >
           {{ link.label[siteStore.locale] }}
         </router-link>
+        
+        <ThemeToggle />
         
         <button 
           @click="toggleLocale"
@@ -66,12 +69,15 @@ const toggleLocale = () => {
         >
           {{ link.label[siteStore.locale] }}
         </router-link>
-        <button 
-          @click="toggleLocale"
-          class="py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg px-3"
-        >
-          {{ siteStore.locale === 'zh' ? '切换到英文' : 'Switch to Chinese' }}
-        </button>
+        <div class="flex items-center gap-4">
+          <ThemeToggle />
+          <button 
+            @click="toggleLocale"
+            class="py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg px-3 flex-1"
+          >
+            {{ siteStore.locale === 'zh' ? '切换到英文' : 'Switch to Chinese' }}
+          </button>
+        </div>
       </div>
     </div>
   </header>
