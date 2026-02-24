@@ -82,6 +82,10 @@ jobs:
           
           echo "Checking decoded key..."
           echo "Key file size: $(wc -c < /tmp/deploy_key) bytes"
+          echo "File type:"
+          file /tmp/deploy_key
+          echo "Hex dump of first 50 bytes:"
+          head -c 50 /tmp/deploy_key | od -A x -t x1z
           echo "Key fingerprint:"
           ssh-keygen -lf /tmp/deploy_key || echo "Invalid key format!"
           echo "First line of key:"
