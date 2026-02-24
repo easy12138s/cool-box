@@ -40,6 +40,14 @@ jobs:
           echo "Username: ${{ secrets.ALIYUN_ACR_USERNAME }}"
           echo "${{ secrets.ALIYUN_ACR_PASSWORD }}" | docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password-stdin ${{ secrets.ALIYUN_ACR_REGISTRY }}
 
+      - name: Generate image tags
+        id: tags
+        run: |
+          BUILD_TIME=$(date +'%Y%m%d-%H%M')
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "build_time=${BUILD_TIME}" >> $GITHUB_OUTPUT
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
@@ -47,7 +55,8 @@ jobs:
           push: true
           tags: |
             ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:latest
-            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:${{ github.sha }}
+            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:${{ steps.tags.outputs.build_time }}
+            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ secrets.ALIYUN_ACR_REPO }}:sha-${{ steps.tags.outputs.short_sha }}
 
   deploy-to-server:
     needs: build-and-push
