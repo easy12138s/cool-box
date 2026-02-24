@@ -36,8 +36,6 @@ jobs:
 
       - name: Login to Aliyun ACR
         run: |
-          echo "Registry: ${{ secrets.ALIYUN_ACR_REGISTRY }}"
-          echo "Username: ${{ secrets.ALIYUN_ACR_USERNAME }}"
           echo "${{ secrets.ALIYUN_ACR_PASSWORD }}" | docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} --password-stdin ${{ secrets.ALIYUN_ACR_REGISTRY }}
 
       - name: Generate image tags
@@ -73,36 +71,50 @@ jobs:
           ACR_USERNAME: ${{ secrets.ALIYUN_ACR_USERNAME }}
           ACR_PASSWORD: ${{ secrets.ALIYUN_ACR_PASSWORD }}
         run: |
-          echo "Decoding SSH key..."
+          set -euo pipefail
+
           printf '%s' "$SSH_KEY" | base64 -d > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
           
-          echo "Converting line endings..."
           sed -i 's/\r$//' /tmp/deploy_key
           
-          echo "Converting key to OpenSSH format..."
-          ssh-keygen -p -m PEM -f /tmp/deploy_key -N "" -q || true
-          
-          echo "Checking decoded key..."
-          echo "Key file size: $(wc -c < /tmp/deploy_key) bytes"
-          echo "File type:"
-          file /tmp/deploy_key
-          echo "Key fingerprint:"
-          ssh-keygen -lf /tmp/deploy_key || echo "Invalid key format!"
-          
-          echo "Testing SSH connection..."
-          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PubkeyAcceptedAlgorithms=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
-          
-          echo "Deploying..."
-          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
-            docker login --username=$ACR_USERNAME --password=$ACR_PASSWORD $ACR_REGISTRY
-            docker pull $ACR_REGISTRY/$ACR_REPO:latest
+          ssh-keygen -lf /tmp/deploy_key >/dev/null
+
+          ssh \
+            -o BatchMode=yes \
+            -o GSSAPIAuthentication=no \
+            -o PreferredAuthentications=publickey \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -o PubkeyAcceptedAlgorithms=+ssh-rsa \
+            -i /tmp/deploy_key \
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" \
+            "echo 'SSH connected successfully'" >/dev/null
+
+          ssh \
+            -o BatchMode=yes \
+            -o GSSAPIAuthentication=no \
+            -o PreferredAuthentications=publickey \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -o PubkeyAcceptedAlgorithms=+ssh-rsa \
+            -i /tmp/deploy_key \
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" \
+            "ACR_REGISTRY='$ACR_REGISTRY' ACR_REPO='$ACR_REPO' ACR_USERNAME='$ACR_USERNAME' ACR_PASSWORD='$ACR_PASSWORD' bash -s" << 'EOF'
+            set -euo pipefail
+
+            printf '%s' "$ACR_PASSWORD" | docker login --username "$ACR_USERNAME" --password-stdin "$ACR_REGISTRY"
+            docker pull "$ACR_REGISTRY/$ACR_REPO:latest"
             docker stop cool-box || true
             docker rm cool-box || true
             docker run -d \
               --name cool-box \
               -p 3000:80 \
               --restart unless-stopped \
-              $ACR_REGISTRY/$ACR_REPO:latest
+              "$ACR_REGISTRY/$ACR_REPO:latest"
             docker ps
           EOF
