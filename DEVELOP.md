@@ -6,6 +6,7 @@
 
 ✅ **已完成** - 基础框架搭建
 ✅ **已完成** - 动态内容加载 + Markdown渲染
+✅ **已完成** - 暗黑模式 + 页面动画
 
 ## 项目概述
 
@@ -67,6 +68,39 @@ src/
 
 - `initSearch()`: 初始化搜索索引
 - `search(query)`: 搜索项目
+
+## 暗黑模式
+
+- 使用 `useSiteStore` 的 `theme` 状态
+- 支持 `light` / `dark` / `auto` 三种模式
+- 通过 `siteStore.toggleTheme()` 切换
+- 偏好保存在 localStorage
+
+## 动画组件
+
+### ScrollReveal
+
+滚动揭示组件，元素进入视口时触发动画。
+
+```vue
+<ScrollReveal :threshold="0.1" :delay="100" direction="up">
+  <div>内容</div>
+</ScrollReveal>
+```
+
+### FadeIn
+
+淡入动画组件。
+
+```vue
+<FadeIn :duration="500" :delay="100">
+  <div>内容</div>
+</FadeIn>
+```
+
+### 页面过渡
+
+App.vue 中已配置页面切换动画（淡入 + 轻微上移）
 
 ## 页面路由
 
