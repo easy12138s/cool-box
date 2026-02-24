@@ -1,21 +1,12 @@
-FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS builder
+# 精简版 Dockerfile - 只使用 Nginx
+# 适合本地构建后推送 dist 目录的场景
 
-WORKDIR /app
+FROM nginx:alpine
 
-RUN corepack enable pnpm
+# 复制构建产物
+COPY dist /usr/share/nginx/html
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
-
-COPY . .
-RUN pnpm build
-
-# Production stage
-FROM registry.cn-hangzhou.aliyuncs.com/library/nginx:alpine
-
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy nginx config
+# 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
