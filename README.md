@@ -101,7 +101,48 @@ docker-compose up -d --build
 docker-compose up -d --build
 ```
 
-### 3. Nginx 手动部署
+### 3. 阿里云容器镜像服务部署
+
+#### 3.1 本地构建并推送镜像
+
+```bash
+# 1. 登录阿里云镜像仓库
+docker login --username=你的阿里云账号 crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com
+
+# 2. 使用脚本构建并推送
+chmod +x scripts/deploy-aliyun.sh
+./scripts/deploy-aliyun.sh latest
+```
+
+或手动执行：
+```bash
+# 构建镜像
+docker build -t crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1:latest .
+
+# 推送镜像
+docker push crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1:latest
+```
+
+#### 3.2 服务器拉取并运行
+
+```bash
+# 1. 登录阿里云镜像仓库
+docker login --username=你的阿里云账号 crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com
+
+# 2. 使用脚本启动
+chmod +x scripts/aliyun-run.sh
+./scripts/aliyun-run.sh latest 3000
+
+# 或手动执行
+docker pull crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1:latest
+docker run -d --name cool-box -p 3000:80 crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1:latest
+```
+
+**镜像地址：**
+- 公网：`crpi-8ucw6aeyy72a7z1p.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1`
+- 专有网络：`crpi-8ucw6aeyy72a7z1p-vpc.cn-shanghai.personal.cr.aliyuncs.com/easy-box/box1`
+
+### 4. Nginx 手动部署
 
 ```bash
 # 1. 安装依赖
