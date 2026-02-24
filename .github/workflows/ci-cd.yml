@@ -80,21 +80,18 @@ jobs:
           echo "Converting line endings..."
           sed -i 's/\r$//' /tmp/deploy_key
           
+          echo "Converting key to OpenSSH format..."
+          ssh-keygen -p -m PEM -f /tmp/deploy_key -N "" -q || true
+          
           echo "Checking decoded key..."
           echo "Key file size: $(wc -c < /tmp/deploy_key) bytes"
           echo "File type:"
           file /tmp/deploy_key
-          echo "Hex dump of first 50 bytes:"
-          head -c 50 /tmp/deploy_key | od -A x -t x1z
           echo "Key fingerprint:"
           ssh-keygen -lf /tmp/deploy_key || echo "Invalid key format!"
-          echo "First line of key:"
-          head -1 /tmp/deploy_key | od -c | head -1
-          echo "Last line of key:"
-          tail -1 /tmp/deploy_key | od -c | head -1
           
           echo "Testing SSH connection..."
-          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
+          ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PubkeyAcceptedAlgorithms=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected successfully'"
           
           echo "Deploying..."
           ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
