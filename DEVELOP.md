@@ -1,10 +1,11 @@
 # Cool Box 开发文档
 
-> 最后更新: 2024-06-20
+> 最后更新: 2024-06-21
 
 ## 项目状态
 
 ✅ **已完成** - 基础框架搭建
+✅ **已完成** - 动态内容加载 + Markdown渲染
 
 ## 项目概述
 
@@ -51,6 +52,21 @@ src/
 
 - 使用 `useSiteStore` 的 `locale` 状态
 - 文本内容通过 `siteStore.locale` 切换
+
+## Composables
+
+### useProjects
+
+- `projects`: 项目列表
+- `fetchProjects()`: 加载所有项目
+- `getProjectBySlug(slug)`: 获取单个项目
+- `getProjectContent(slug, locale)`: 获取项目Markdown内容
+- `getProjectHasVuePage(slug)`: 检查是否有Vue页面
+
+### useSearch
+
+- `initSearch()`: 初始化搜索索引
+- `search(query)`: 搜索项目
 
 ## 页面路由
 
