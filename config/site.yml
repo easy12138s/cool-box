@@ -19,5 +19,6 @@ site:
 
 home:
   featured:
+    - cool-quick
     - demo-project
     - vue-dashboard

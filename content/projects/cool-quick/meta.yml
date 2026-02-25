@@ -1,0 +1,17 @@
+slug: cool-quick
+title:
+  zh: CoolQuick - 智能剪贴板管理工具
+  en: CoolQuick - Intelligent Clipboard Manager
+description:
+  zh: 跨平台桌面应用，自动捕获和智能分类剪贴板内容，支持多窗口、悬浮窗与数据加密。
+  en: Cross-platform desktop app for automatic clipboard capture and smart classification, featuring multi-window support, floating widget, and data encryption.
+
+tags: [Tauri, Rust, React, SQLite, TypeScript]
+status: active
+
+links:
+  github: https://github.com/easy12138s/cool-quick
+  demo: https://github.com/easy12138s/cool-quick/releases
+
+createdAt: 2024-03-20
+order: 1
