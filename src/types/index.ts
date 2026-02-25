@@ -34,6 +34,9 @@ export interface SiteConfig {
     title: string
     description: { zh: string; en: string }
   }
+  home?: {
+    featured?: string[]
+  }
 }
 
 export type Locale = 'zh' | 'en'

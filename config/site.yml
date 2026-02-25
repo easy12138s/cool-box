@@ -1,19 +1,23 @@
 author:
-  name: Your Name
-  avatar: /images/avatar.png
+  name: Cool Box
+  avatar: /favicon.svg
   bio:
-    zh: 你好！我是一名开发者，热爱开源和新技术。
-    en: Hello! I'm a developer who loves open source and new technologies.
-  location: China
+    zh: 专注于创造有趣、实用的数字产品。在这里，你可以找到我的开源项目、技术实验和创意作品。
+    en: Dedicated to creating interesting and practical digital products. Here you can find my open source projects, technical experiments, and creative works.
+  location: Earth
 
 social:
-  github: https://github.com/username
-  blog: https://blog.example.com
-  twitter: https://twitter.com/username
-  email: mailto:your@email.com
+  github: https://github.com/easy12138s
+  blog: https://easy12138s.github.io/cool-box/
+  email: mailto:hello@example.com
 
 site:
   title: Cool Box
   description:
-    zh: 我的项目展示空间
-    en: My Project Showcase
+    zh: 一个简洁、现代的项目展示空间
+    en: A minimal and modern project showcase space
+
+home:
+  featured:
+    - demo-project
+    - vue-dashboard
