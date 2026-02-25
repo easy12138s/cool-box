@@ -11,7 +11,10 @@ const router = useRouter()
 const siteStore = useSiteStore()
 
 const goToProject = () => {
-  router.push(`/projects/${props.project.slug}`)
+  router.push({
+    path: `/projects/${props.project.slug}`,
+    state: { fromApp: true }
+  })
 }
 </script>
 
