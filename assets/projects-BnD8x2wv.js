@@ -1,4 +1,4 @@
-import{m as f,_ as u,x as _}from"./index-D_bvfKlR.js";const P=`slug: demo-project
+import{m as f,_ as u,x as _}from"./index-CK7cvFyo.js";const P=`slug: demo-project
 title:
   zh: 示例项目
   en: Demo Project
