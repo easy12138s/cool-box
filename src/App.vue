@@ -17,6 +17,8 @@ onMounted(() => {
 // 1. If NOT on a project detail page -> Always show
 // 2. If on a project detail page -> Only show if history.state.fromApp is true
 const showLayout = computed(() => {
+  // Admin routes have their own layout
+  if (route.path.startsWith('/admin')) return false
   if (route.name !== 'project-detail') return true
   
   // In Vue Router 4, history.state is available via window.history.state
