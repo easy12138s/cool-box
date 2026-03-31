@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://47.100.92.187:8082/api/v1'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.easybox.icu/api/v1'
 
 export interface ApiResponse<T = any> {
   data: T

@@ -34,7 +34,16 @@ const handleLogin = async () => {
       router.push(redirect)
     }
   } catch (err: any) {
-    error.value = err.response?.data?.detail || '登录失败，请检查用户名和密码'
+    console.error('Login error:', err)
+    if (err.message?.includes('Network Error')) {
+      error.value = '网络错误，请检查后端服务是否可用'
+    } else if (err.response?.status === 401) {
+      error.value = err.response?.data?.detail || '用户名或密码错误'
+    } else if (err.response?.status === 403) {
+      error.value = '没有权限访问管理后台'
+    } else {
+      error.value = err.response?.data?.detail || '登录失败，请检查用户名和密码'
+    }
   } finally {
     loading.value = false
   }
