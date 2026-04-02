@@ -17,6 +17,7 @@ const mainLinks = [
 ]
 
 const serviceLinks = [
+  { path: '/admin/service-types', label: '服务类型', icon: 'i-carbon-category' },
   { path: '/admin/service-configs', label: '服务配置', icon: 'i-carbon-settings' },
   { path: '/admin/service-call-logs', label: '服务日志', icon: 'i-carbon-data-table' },
 ]

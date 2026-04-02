@@ -22,12 +22,33 @@ export interface InvitationCode {
   expires_at: string
 }
 
+export interface ServiceType {
+  id: number
+  code: string
+  name: string
+  description: string | null
+  is_active: boolean
+  created_at: string
+}
+
 export interface ServiceConfig {
   id: number
-  code_id: number
-  config_json: string
+  service_type_id: number
+  name: string
+  config_data: string
+  is_active: boolean
   created_at: string
   updated_at: string
+  service_type?: ServiceType
+}
+
+export interface ServiceConfigAssociation {
+  id: number
+  invitation_code_id: number
+  service_config_id: number
+  is_active: boolean
+  config: ServiceConfig
+  service_type_name: string
 }
 
 export interface Log {
@@ -123,9 +144,23 @@ export interface CreateInvitationCodeData {
   expires_at?: string
 }
 
+export interface CreateServiceTypeData {
+  code: string
+  name: string
+  description?: string
+  is_active?: boolean
+}
+
 export interface CreateServiceConfigData {
-  code_id: number
-  config_json: string
+  service_type_id: number
+  name: string
+  config_data: string
+  is_active?: boolean
+}
+
+export interface CreateServiceConfigAssociationData {
+  service_config_id: number
+  is_active?: boolean
 }
 
 export const adminApi = {
@@ -177,8 +212,48 @@ export const adminApi = {
     return apiClient.delete<void>(`/admin/invitation-codes/${id}`)
   },
 
-  getServiceConfigs: () => {
-    return apiClient.get<ListResponse<ServiceConfig>>('/admin/service-configs')
+  getInvitationCodeConfigs: (codeId: number) => {
+    return apiClient.get<ListResponse<ServiceConfigAssociation>>(`/admin/invitation-codes/${codeId}/configs`)
+  },
+
+  createInvitationCodeConfig: (codeId: number, data: CreateServiceConfigAssociationData) => {
+    return apiClient.post<ServiceConfigAssociation>(`/admin/invitation-codes/${codeId}/configs`, data)
+  },
+
+  updateInvitationCodeConfig: (codeId: number, assocId: number, data: Partial<CreateServiceConfigAssociationData>) => {
+    return apiClient.put<ServiceConfigAssociation>(`/admin/invitation-codes/${codeId}/configs/${assocId}`, data)
+  },
+
+  deleteInvitationCodeConfig: (codeId: number, assocId: number) => {
+    return apiClient.delete<void>(`/admin/invitation-codes/${codeId}/configs/${assocId}`)
+  },
+
+  getServiceTypes: () => {
+    return apiClient.get<ListResponse<ServiceType>>('/admin/service-types')
+  },
+
+  getServiceType: (id: number) => {
+    return apiClient.get<ServiceType>(`/admin/service-types/${id}`)
+  },
+
+  createServiceType: (data: CreateServiceTypeData) => {
+    return apiClient.post<ServiceType>('/admin/service-types', data)
+  },
+
+  updateServiceType: (id: number, data: Partial<CreateServiceTypeData>) => {
+    return apiClient.put<ServiceType>(`/admin/service-types/${id}`, data)
+  },
+
+  deleteServiceType: (id: number) => {
+    return apiClient.delete<void>(`/admin/service-types/${id}`)
+  },
+
+  getServiceConfigs: (params?: { service_type_id?: number; skip?: number; limit?: number }) => {
+    return apiClient.get<ListResponse<ServiceConfig>>('/admin/service-configs', { params })
+  },
+
+  getServiceConfig: (id: number) => {
+    return apiClient.get<ServiceConfig>(`/admin/service-configs/${id}`)
   },
 
   createServiceConfig: (data: CreateServiceConfigData) => {
