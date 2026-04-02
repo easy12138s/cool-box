@@ -26,7 +26,8 @@ const columns: TableColumn[] = [
   { key: 'name', label: '配置名称', sortable: true },
   { key: 'service_type', label: '服务类型', width: '100px' },
   { key: 'is_active', label: '状态', width: '80px' },
-  { key: 'created_at', label: '创建时间', width: '160px' }
+  { key: 'created_at', label: '创建时间', width: '160px' },
+  { key: 'actions', label: '操作', width: '100px' }
 ]
 
 const formData = ref({
