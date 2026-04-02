@@ -1,4 +1,4 @@
-import{m as f,_ as u,x as j}from"./index-86OkIDst.js";const P=`slug: cool-quick
+import{m as f,_ as u,x as j}from"./index-CPcmul1n.js";const P=`slug: cool-quick
 title:
   zh: CoolQuick - 智能剪贴板管理工具
   en: CoolQuick - Intelligent Clipboard Manager
