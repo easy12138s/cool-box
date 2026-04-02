@@ -64,6 +64,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/ServiceConfigs.vue')
       },
       {
+        path: 'service-configs/:id',
+        name: 'admin-service-config-detail',
+        component: () => import('@/views/admin/ServiceConfigDetail.vue')
+      },
+      {
+        path: 'service-call-logs',
+        name: 'admin-service-call-logs',
+        component: () => import('@/views/admin/ServiceLogs.vue')
+      },
+      {
         path: 'logs',
         name: 'admin-logs',
         component: () => import('@/views/admin/Logs.vue')

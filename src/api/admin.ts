@@ -42,6 +42,32 @@ export interface Log {
   created_at: string
 }
 
+export interface ServiceCallLog {
+  id: number
+  service_type: 'llm' | 'asr'
+  endpoint: string
+  duration_ms: number
+  status_code: number
+  ip: string
+  error_message: string | null
+  created_at: string
+}
+
+export interface ServiceCallLogDetail extends ServiceCallLog {
+  request_data: string
+  response_data: string
+  credential_id: number
+  project_id: number
+}
+
+export interface ServiceCallLogListResponse {
+  data: ServiceCallLog[]
+  count: number
+  page: number
+  page_size: number
+  total_pages: number
+}
+
 export interface Stats {
   total_calls: number
   success_rate: number
@@ -169,6 +195,14 @@ export const adminApi = {
 
   getLogs: (params?: { project_id?: number; skip?: number; limit?: number }) => {
     return apiClient.get<ListResponse<Log>>('/admin/logs', { params })
+  },
+
+  getServiceCallLogs: (params?: { service_type?: string; project_id?: number; page?: number; page_size?: number }) => {
+    return apiClient.get<ServiceCallLogListResponse>('/admin/service-call-logs', { params })
+  },
+
+  getServiceCallLogDetail: (id: number) => {
+    return apiClient.get<ServiceCallLogDetail>(`/admin/service-call-logs/${id}`)
   },
 
   getStats: (params?: { project_id?: number; start_date?: string; end_date?: string }) => {
