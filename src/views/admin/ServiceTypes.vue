@@ -97,7 +97,7 @@ onMounted(() => {
       <h2 class="text-xl font-bold text-gray-900 dark:text-white">服务类型管理</h2>
       <button
         @click="handleCreate"
-        class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 border border-blue-600 shadow-sm"
       >
         新建服务类型
       </button>

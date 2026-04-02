@@ -199,7 +199,7 @@ onMounted(() => {
       <h2 class="text-xl font-bold text-gray-900 dark:text-white">服务配置</h2>
       <button
         @click="handleCreate"
-        class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 border border-blue-600 shadow-sm"
       >
         新建配置
       </button>
@@ -286,6 +286,7 @@ onMounted(() => {
             <input
               v-model="formData.name"
               type="text"
+              autocomplete="off"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               placeholder="如: COOL2026-LLM"
             />
@@ -305,15 +306,15 @@ onMounted(() => {
             <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">LLM 配置</h4>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Base URL</label>
-              <input v-model="llmFormData.base_url" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="https://api.example.com/v1" />
+              <input v-model="llmFormData.base_url" type="text" autocomplete="off" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="https://api.example.com/v1" />
             </div>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">API Key</label>
-              <input v-model="llmFormData.api_key" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="sk-xxx" />
+              <input v-model="llmFormData.api_key" type="password" autocomplete="new-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="sk-xxx" />
             </div>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Model</label>
-              <input v-model="llmFormData.model" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="gpt-4" />
+              <input v-model="llmFormData.model" type="text" autocomplete="off" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="gpt-4" />
             </div>
           </div>
 
@@ -321,15 +322,15 @@ onMounted(() => {
             <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">ASR 配置</h4>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">App ID</label>
-              <input v-model="asrFormData.app_id" type="text" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="123456" />
+              <input v-model="asrFormData.app_id" type="text" autocomplete="off" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="123456" />
             </div>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">API Key</label>
-              <input v-model="asrFormData.api_key" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+              <input v-model="asrFormData.api_key" type="password" autocomplete="new-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
             </div>
             <div>
               <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Secret Key</label>
-              <input v-model="asrFormData.secret_key" type="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+              <input v-model="asrFormData.secret_key" type="password" autocomplete="new-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
             </div>
           </div>
 
@@ -343,7 +344,7 @@ onMounted(() => {
             <button
               @click="handleFormSubmit"
               :disabled="formLoading"
-              class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 border border-blue-600 shadow-sm"
             >
               {{ formLoading ? '保存中...' : '保存' }}
             </button>
